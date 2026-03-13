@@ -4,10 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rain Predictor — Chicago</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" as="script">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
@@ -27,6 +24,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
+  /* header */
   header { border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; }
   .logo { display: flex; align-items: center; gap: 12px; }
   .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
@@ -34,14 +32,17 @@
   .logo span { font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; }
   .header-badge { font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
 
+  /* layout */
   .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
 
+  /* controls */
   .controls { display: flex; gap: 12px; margin-bottom: 2rem; flex-wrap: wrap; align-items: center; }
   .control-group { display: flex; align-items: center; gap: 8px; }
   .control-group label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
   select { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.85rem; padding: 8px 12px; border-radius: 8px; cursor: pointer; outline: none; }
   select:hover { border-color: var(--accent); }
 
+  /* stats grid */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
   .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; }
   .stat .label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
@@ -52,13 +53,34 @@
   .stat.yellow .value { color: var(--yellow); }
   .stat.purple .value { color: var(--accent2); }
 
+  /* cards */
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
   .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
   .card-header h2 { font-size: 0.9rem; font-weight: 600; letter-spacing: -0.01em; }
   .card-header .tag { font-family: 'DM Mono', monospace; font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
 
+  /* two col */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
 
+  /* kalshi */
+  .kalshi-section { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+  .kalshi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+  .kalshi-header h2 { font-size: 0.9rem; font-weight: 600; }
+  .kalshi-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--accent); border: 1px solid var(--accent); padding: 3px 8px; border-radius: 6px; }
+  .kalshi-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .kalshi-row:last-child { border-bottom: none; }
+  .kalshi-row .thresh { font-size: 0.85rem; color: var(--text); }
+  .kalshi-row .thresh small { display: block; font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+  .kalshi-row .our-prob { font-family: 'DM Mono', monospace; font-size: 0.85rem; font-weight: 500; color: var(--accent); min-width: 60px; text-align: right; }
+  .kalshi-input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.8rem; padding: 5px 8px; border-radius: 6px; width: 72px; text-align: center; outline: none; }
+  .kalshi-input:focus { border-color: var(--accent); }
+  .edge-badge { font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 500; padding: 4px 10px; border-radius: 20px; min-width: 70px; text-align: center; }
+  .edge-pos { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .edge-neg { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .edge-neu { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+  .kalshi-hint { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 1rem; }
+
+  /* month strip */
   .month-strip { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; margin-bottom: 1.5rem; }
   .month-cell { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 4px; text-align: center; cursor: pointer; transition: all 0.15s; }
   .month-cell:hover { border-color: var(--accent); }
@@ -66,24 +88,7 @@
   .month-cell .mn { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); }
   .month-cell .mv { font-size: 0.8rem; font-weight: 700; margin-top: 3px; }
 
-  .kalshi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
-  .kalshi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
-  .kalshi-header h2 { font-size: 0.9rem; font-weight: 600; }
-  .kalshi-live { font-family: 'DM Mono', monospace; font-size: 0.65rem; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--accent); color: var(--accent); }
-
-  .kalshi-row { display: grid; grid-template-columns: 1fr 70px 70px 110px; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-  .kalshi-row:last-child { border-bottom: none; }
-  .kalshi-row .thresh { font-size: 0.85rem; font-weight: 600; color: var(--text); }
-  .kalshi-row .thresh small { display: block; font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); margin-top: 2px; }
-  .prob-val { font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 700; text-align: center; }
-  .edge-badge { font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 700; padding: 6px 10px; border-radius: 8px; text-align: center; }
-  .edge-pos { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.35); }
-  .edge-neg { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.35); }
-  .edge-neu { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
-  .col-headers { display: grid; grid-template-columns: 1fr 70px 70px 110px; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 2px; }
-  .col-headers span { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; text-align: center; }
-  .col-headers span:first-child { text-align: left; }
-
+  /* chart overrides */
   canvas { max-width: 100%; }
 </style>
 </head>
@@ -105,7 +110,7 @@
   <div class="controls">
     <div class="control-group">
       <label>Year</label>
-      <select id="yearSelect">
+      <select id="yearSelect" onchange="updateAll()">
         <option value="2024">2024</option>
         <option value="2023">2023</option>
         <option value="2022">2022</option>
@@ -139,8 +144,10 @@
     </div>
   </div>
 
+  <!-- month strip -->
   <div class="month-strip" id="monthStrip"></div>
 
+  <!-- bar chart -->
   <div class="card">
     <div class="card-header">
       <h2 id="chartTitle">Monthly Rainfall</h2>
@@ -149,6 +156,7 @@
     <canvas id="rainfallChart" height="80"></canvas>
   </div>
 
+  <!-- two col: line chart + kalshi -->
   <div class="two-col">
     <div class="card">
       <div class="card-header">
@@ -158,44 +166,22 @@
       <canvas id="comparisonChart" height="160"></canvas>
     </div>
 
-    <div class="kalshi-card">
+    <div class="kalshi-section">
       <div class="kalshi-header">
-        <h2>Kalshi edge — <span id="kalshiMonthLabel">select a month</span></h2>
-        <span class="kalshi-live">live</span>
+        <h2>Kalshi edge — <span id="kalshiMonthLabel">select month</span></h2>
+        <span class="kalshi-label">live</span>
       </div>
-      <div style="margin-bottom:1rem;">
-        <p style="font-size:0.78rem;color:var(--muted);line-height:1.7;margin-bottom:0.7rem;">Click any month above to see how our model compares to live Kalshi market prices.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <span style="font-size:0.68rem;padding:3px 9px;border-radius:6px;background:rgba(52,211,153,0.1);color:var(--green);border:1px solid rgba(52,211,153,0.25);">+ edge → BUY YES</span>
-          <span style="font-size:0.68rem;padding:3px 9px;border-radius:6px;background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.25);">− edge → BUY NO</span>
-          <span style="font-size:0.68rem;padding:3px 9px;border-radius:6px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);">within 5% → no edge</span>
-        </div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:1rem;">
+        Click a month above → enter Kalshi's % → see your edge
       </div>
       <div id="kalshiRows"></div>
+      <div class="kalshi-hint">Enter Kalshi market % to calculate edge. Positive = we think it's more likely than the market does.</div>
     </div>
   </div>
 
 </div>
 
 <script>
-const KALSHI_DATA = {
-  "Above 1 inch": 100,
-  "Above 2 inches": 99,
-  "Above 3 inches": 90,
-  "Above 4 inches": 58,
-  "Above 5 inches": 18,
-  "Above 6 inches": 8,
-  "Above 7 inches": 5
-};
-const MODEL_DATA = {
-  "Above 1 inch": 95,
-  "Above 2 inches": 84,
-  "Above 3 inches": 62,
-  "Above 4 inches": 35,
-  "Above 5 inches": 14
-};
-const MODEL_META = {"blended_mm": 87.5, "weighted_avg_mm": 91.4, "linear_mm": 76.1, "xgboost_mm": 93.6};
-
 const RAIN_DATA = {
   "2020-01":97.9,"2020-02":88.1,"2020-03":159.7,"2020-04":121.9,"2020-05":149.8,
   "2020-06":108.3,"2020-07":83.0,"2020-08":110.2,"2020-09":68.5,"2020-10":69.7,
@@ -250,12 +236,14 @@ function buildMonthStrip() {
   const strip = document.getElementById('monthStrip');
   const yearVal = document.getElementById('yearSelect').value;
   const data = yearVal === 'all' ? getAvgData() : getYearData(yearVal);
+  const max = Math.max(...data);
   strip.innerHTML = '';
   MONTHS.forEach((m, i) => {
     const div = document.createElement('div');
     div.className = 'month-cell' + (selectedMonth === i ? ' active' : '');
-    div.style.borderColor = selectedMonth === i ? 'var(--accent)' : 'var(--border)';
-    div.innerHTML = `<div class="mn">${m}</div><div class="mv" style="color:${selectedMonth === i ? 'var(--accent2)' : 'var(--text)'}">${data[i].toFixed(0)}</div>`;
+    const intensity = data[i] / max;
+    div.style.borderColor = selectedMonth === i ? 'var(--accent)' : `rgba(56,189,248,${intensity * 0.6})`;
+    div.innerHTML = `<div class="mn">${m}</div><div class="mv" style="color:hsl(${200 + intensity*60},80%,${50+intensity*20}%)">${data[i].toFixed(0)}</div>`;
     div.onclick = () => { selectedMonth = i; updateAll(); };
     strip.appendChild(div);
   });
@@ -270,6 +258,7 @@ function updateStats(data, label) {
   const total = data.reduce((a,b)=>a+b,0);
   const allVals = Object.values(RAIN_DATA);
   const avg = allVals.reduce((a,b)=>a+b,0)/allVals.length;
+
   document.getElementById('wettestMonth').textContent = MONTHS[maxIdx];
   document.getElementById('wettestVal').textContent = max.toFixed(1)+'mm';
   document.getElementById('driestMonth').textContent = MONTHS[minIdx];
@@ -280,6 +269,7 @@ function updateStats(data, label) {
 }
 
 function updateBarChart(data, label) {
+  const max = Math.max(...data);
   document.getElementById('chartTitle').textContent = `Monthly Rainfall — ${label}`;
   if (chart1) chart1.destroy();
   chart1 = new Chart(document.getElementById('rainfallChart').getContext('2d'), {
@@ -288,18 +278,25 @@ function updateBarChart(data, label) {
       labels: MONTHS,
       datasets: [{
         data,
-        backgroundColor: data.map((v,i) => selectedMonth === i ? '#818cf8' : 'rgba(56,189,248,0.2)'),
+        backgroundColor: data.map((v,i) => {
+          if (selectedMonth === i) return '#818cf8';
+          return v === max ? '#38bdf8' : 'rgba(56,189,248,0.25)';
+        }),
         borderRadius: 6,
         borderSkipped: false
       }]
     },
     options: {
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw.toFixed(1)}mm` }}},
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: ctx => ` ${ctx.raw.toFixed(1)}mm` }
+      }},
       scales: {
         y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { family: 'DM Mono' } }, title: { display: true, text: 'mm', color: '#64748b' } },
         x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
       },
-      onClick: (e, els) => { if (els.length) { selectedMonth = els[0].index; updateAll(); } }
+      onClick: (e, els) => {
+        if (els.length) { selectedMonth = els[0].index; updateAll(); }
+      }
     }
   });
 }
@@ -336,65 +333,55 @@ function updateKalshi() {
   const label = document.getElementById('kalshiMonthLabel');
 
   if (selectedMonth === null) {
-    label.textContent = 'select a month';
-    container.innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:0.72rem;color:var(--muted);padding:1.2rem 0;text-align:center;">Click any month above to see edge calculations.</div>';
+    label.textContent = 'select a month above';
+    container.innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:0.75rem;color:var(--muted);padding:1rem 0;">Click any month in the strip above to see edge calculations.</div>';
     return;
   }
 
   label.textContent = MONTHS[selectedMonth];
   const historical = getMonthHistorical(selectedMonth);
 
-  container.innerHTML = `
-    <div class="col-headers">
-      <span>Threshold</span>
-      <span>Model</span>
-      <span>Kalshi</span>
-      <span>Signal</span>
-    </div>
-  `;
-
-  THRESHOLDS.forEach((t) => {
+  container.innerHTML = '';
+  THRESHOLDS.forEach((t, i) => {
     const ourCount = historical.filter(v => v >= t.mm).length;
-    const historicalProb = Math.round(ourCount / historical.length * 100);
-    const modelProb = (typeof MODEL_DATA !== 'undefined' && MODEL_DATA[t.label] !== undefined) ? MODEL_DATA[t.label] : historicalProb;
-    const kalshiProb = KALSHI_DATA[t.label] ?? null;
-    const edge = kalshiProb !== null ? modelProb - kalshiProb : null;
-
-    let badgeHTML, badgeClass;
-    if (edge === null) {
-      badgeHTML = 'no data'; badgeClass = 'edge-neu';
-    } else if (edge > 5) {
-      badgeHTML = `+${edge}% · BUY YES`; badgeClass = 'edge-pos';
-    } else if (edge < -5) {
-      badgeHTML = `${edge}% · BUY NO`; badgeClass = 'edge-neg';
-    } else {
-      badgeHTML = `${edge >= 0 ? '+' : ''}${edge}% · no edge`; badgeClass = 'edge-neu';
-    }
+    const ourProb = Math.round(ourCount / historical.length * 100);
 
     const row = document.createElement('div');
     row.className = 'kalshi-row';
     row.innerHTML = `
-      <div class="thresh">${t.label}<small>${t.mm}mm</small></div>
-      <div class="prob-val" style="color:var(--accent)">${modelProb}%</div>
-      <div class="prob-val" style="color:var(--yellow)">${kalshiProb !== null ? kalshiProb+'%' : '—'}</div>
-      <div class="edge-badge ${badgeClass}">${badgeHTML}</div>
+      <div class="thresh">
+        ${t.label}
+        <small>${t.mm}mm threshold</small>
+      </div>
+      <div class="our-prob">${ourProb}%</div>
+      <input class="kalshi-input" type="number" min="0" max="100" placeholder="Kalshi%" id="ki_${i}" oninput="calcEdge(${i}, ${ourProb})">
+      <div class="edge-badge edge-neu" id="ke_${i}">—</div>
     `;
     container.appendChild(row);
   });
+}
 
+function calcEdge(idx, ourProb) {
+  const input = document.getElementById(`ki_${idx}`);
+  const badge = document.getElementById(`ke_${idx}`);
+  const kalshiVal = parseFloat(input.value);
+  if (isNaN(kalshiVal)) { badge.textContent = '—'; badge.className = 'edge-badge edge-neu'; return; }
+  const edge = ourProb - kalshiVal;
+  badge.textContent = (edge >= 0 ? '+' : '') + edge.toFixed(0) + '%';
+  badge.className = 'edge-badge ' + (edge > 3 ? 'edge-pos' : edge < -3 ? 'edge-neg' : 'edge-neu');
+}
 
 function updateAll() {
   const yearVal = document.getElementById('yearSelect').value;
-  const data = yearVal === 'all' ? getAvgData() : getYearData(parseInt(yearVal));
-  const label = yearVal === 'all' ? '5-Year Avg' : yearVal;
-  updateBarChart(data, label);
+  const data = yearVal === 'all' ? getAvgData() : getYearData(yearVal);
+  const label = yearVal === 'all' ? '5-yr avg' : yearVal;
   updateStats(data, label);
-  buildMonthStrip();
+  updateBarChart(data, label);
   updateLineChart();
+  buildMonthStrip();
   updateKalshi();
 }
 
-document.getElementById('yearSelect').addEventListener('change', updateAll);
 updateAll();
 </script>
 </body>
