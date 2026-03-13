@@ -1,0 +1,44 @@
+{
+  "KXRAINCHIM-26MAR-1": {
+    "threshold": "Above 1 inch",
+    "yes_bid": 99,
+    "yes_ask": 100,
+    "mid": 100
+  },
+  "KXRAINCHIM-26MAR-2": {
+    "threshold": "Above 2 inches",
+    "yes_bid": 98,
+    "yes_ask": 100,
+    "mid": 99
+  },
+  "KXRAINCHIM-26MAR-3": {
+    "threshold": "Above 3 inches",
+    "yes_bid": 87,
+    "yes_ask": 93,
+    "mid": 90
+  },
+  "KXRAINCHIM-26MAR-4": {
+    "threshold": "Above 4 inches",
+    "yes_bid": 55,
+    "yes_ask": 60,
+    "mid": 58
+  },
+  "KXRAINCHIM-26MAR-5": {
+    "threshold": "Above 5 inches",
+    "yes_bid": 15,
+    "yes_ask": 21,
+    "mid": 18
+  },
+  "KXRAINCHIM-26MAR-6": {
+    "threshold": "Above 6 inches",
+    "yes_bid": 8,
+    "yes_ask": 9,
+    "mid": 8
+  },
+  "KXRAINCHIM-26MAR-7": {
+    "threshold": "Above 7 inches",
+    "yes_bid": 4,
+    "yes_ask": 6,
+    "mid": 5
+  }
+}

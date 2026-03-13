@@ -1,0 +1,14 @@
+{
+  "month": "March 2026",
+  "blended_mm": 87.5,
+  "weighted_avg_mm": 91.4,
+  "linear_mm": 76.1,
+  "xgboost_mm": 93.6,
+  "probabilities": {
+    "Above 1 inch": 95,
+    "Above 2 inches": 84,
+    "Above 3 inches": 62,
+    "Above 4 inches": 35,
+    "Above 5 inches": 14
+  }
+}
