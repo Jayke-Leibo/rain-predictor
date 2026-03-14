@@ -48,8 +48,8 @@
     "favorable_for_rain": "positive"
   },
   "gulf_sst": {
-    "value": 24.6,
-    "date": "2026-03-13",
+    "value": 24.7,
+    "date": "2026-03-14",
     "signal": "dry",
     "label": "Gulf of Mexico SST",
     "unit": "\u00b0C",
@@ -58,8 +58,8 @@
     "baseline": 27.0
   },
   "tpw": {
-    "value": 65.0,
-    "date": "2026-03-12",
+    "value": 54.8,
+    "date": "2026-03-13",
     "signal": "neutral",
     "label": "Surface Relative Humidity",
     "unit": "%",
@@ -67,8 +67,8 @@
     "favorable_for_rain": "> 75%"
   },
   "z500": {
-    "value": 1020.7,
-    "date": "2026-03-12",
+    "value": 1006.1,
+    "date": "2026-03-13",
     "signal": "neutral",
     "label": "Mean Sea Level Pressure",
     "unit": "hPa",
