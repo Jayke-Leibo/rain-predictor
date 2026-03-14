@@ -16,6 +16,12 @@ with open("data_full.json") as f:
 with open("model_predictions_v2.json") as f:
     predictions = json.load(f)
 
+try:
+    with open("indices_current.json") as f:
+        indices = json.load(f)
+except FileNotFoundError:
+    indices = {}
+
 # Build compact daily precip dict {date: mm}
 daily_precip = {d: round(r.get("precipitation_sum") or 0, 2) for d, r in daily_full.items()}
 
@@ -34,6 +40,7 @@ monthly_js   = json.dumps(monthly,      separators=(',',':'))
 daily_js     = json.dumps(daily_precip, separators=(',',':'))
 pred_js      = json.dumps(predictions,  separators=(',',':'))
 kalshi_js    = json.dumps(kalshi,        separators=(',',':'))
+indices_js   = json.dumps(indices,       separators=(',',':'))
 
 print(f"  {len(monthly)} monthly totals")
 print(f"  {len(daily_precip)} daily records")
@@ -264,7 +271,68 @@ select:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(2,132,199,.12)}
   background:var(--surface2);border:1px solid var(--border);
   border-radius:8px;padding:8px 12px;margin-bottom:1.2rem;line-height:1.7;
 }
-.empty-state{text-align:center;padding:2.5rem;color:var(--muted2);font-size:0.75rem;font-family:'DM Mono',monospace}
+/* ── SIGNAL CARDS ── */
+.signals-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:1.4rem}
+.signal-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:1.4rem 1.5rem;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  position:relative;overflow:hidden;
+  transition:transform .15s,box-shadow .15s;
+}
+.signal-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.signal-card.sig-wet{background:linear-gradient(135deg,#f0f9ff 0%,#ffffff 60%);border-color:#bae6fd}
+.signal-card.sig-dry{background:linear-gradient(135deg,#fffbeb 0%,#ffffff 60%);border-color:#fde68a}
+.signal-card.sig-neutral{background:#ffffff}
+.signal-card.sig-unknown{background:#fafafa}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+.sc-left{}
+.sc-label{font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}
+.sc-name{font-size:0.9rem;font-weight:700;color:var(--navy)}
+.sc-emoji{font-size:2.2rem;line-height:1;opacity:0.85}
+.sc-mid{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.sc-value{font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--navy);letter-spacing:-.02em}
+.sc-unit{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);font-weight:400}
+.sc-date{font-family:'DM Mono',monospace;font-size:0.56rem;color:var(--muted2);margin-bottom:10px}
+.sc-gauge{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border)}
+.sc-gauge-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.sc-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border)}
+.sc-badge{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.62rem;font-weight:700;padding:4px 10px;border-radius:6px}
+.sc-badge.sig-wet{background:var(--sky-light);color:var(--sky);border:1px solid #7dd3fc}
+.sc-badge.sig-dry{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bdr)}
+.sc-badge.sig-neutral{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.sc-badge.sig-unknown{background:var(--surface2);color:var(--muted2);border:1px solid var(--border)}
+.sc-desc{font-size:0.62rem;color:var(--muted);line-height:1.5;max-width:260px;text-align:right}
+
+/* ── SIGNAL SUMMARY BAR ── */
+.signal-summary{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:1.4rem 1.8rem;margin-bottom:1.4rem;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+.ss-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem}
+.ss-title{font-size:0.82rem;font-weight:700;color:var(--navy)}
+.ss-date{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted)}
+.ss-counts{display:flex;gap:1.5rem;margin-bottom:1rem}
+.ss-item{display:flex;align-items:center;gap:8px}
+.ss-dot{width:10px;height:10px;border-radius:50%}
+.ss-count{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.ss-label{font-size:0.6rem;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px}
+.ss-bar-wrap{margin-bottom:0.5rem}
+.ss-bar-track{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;border:1px solid var(--border);position:relative}
+.ss-bar-wet{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border-radius:5px 0 0 5px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.ss-bar-dry{position:absolute;right:0;top:0;height:100%;background:linear-gradient(270deg,#b45309,#fbbf24);border-radius:0 5px 5px 0;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.ss-bar-labels{display:flex;justify-content:space-between;margin-top:5px}
+.ss-bar-label{font-family:'DM Mono',monospace;font-size:0.56rem;color:var(--muted)}
+.overall-verdict{
+  margin-top:1rem;padding:0.9rem 1.2rem;border-radius:10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.ov-wet{background:var(--sky-light);border:1px solid #7dd3fc}
+.ov-dry{background:var(--amber-bg);border:1px solid var(--amber-bdr)}
+.ov-neutral{background:var(--surface2);border:1px solid var(--border)}
+.ov-label{font-size:0.6rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.ov-value{font-size:0.9rem;font-weight:700}
 canvas{max-width:100%}
 </style>
 </head>
@@ -282,6 +350,7 @@ canvas{max-width:100%}
     <button class="tab-btn active" data-tab="historical" onclick="showTab('historical')">Historical</button>
     <button class="tab-btn" data-tab="predictions" onclick="showTab('predictions')">Predictions</button>
     <button class="tab-btn" data-tab="edge" onclick="showTab('edge')">Kalshi Edge</button>
+    <button class="tab-btn" data-tab="signals" onclick="showTab('signals')">Climate Signals</button>
   </nav>
   <div class="live-badge"><div class="live-dot"></div>live</div>
 </header>
@@ -458,6 +527,32 @@ canvas{max-width:100%}
   </div>
 </div>
 
+<!-- ══ TAB 4: CLIMATE SIGNALS ════════════════════════════ -->
+<div id="tab-signals" class="tab-content">
+  <p class="page-title">Climate Signals</p>
+  <p class="page-sub">Live atmospheric indices that drive Chicago rainfall · run fetch_indices.py to refresh</p>
+
+  <div class="signal-summary" id="signalSummary"></div>
+  <div class="signals-grid" id="signalsGrid"></div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Index reference guide</h2>
+      <span class="tag">what each signal means for Chicago</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem 2rem;font-size:0.72rem;line-height:1.65;color:var(--navy2)">
+      <p><strong>AO</strong> — Negative polar vortex = cold air masses push south, collide with Gulf moisture over the Midwest.</p>
+      <p><strong>NAO</strong> — Negative NAO steers Atlantic storm systems southward toward the central US.</p>
+      <p><strong>MJO</strong> — A 30–60 day tropical wave. Phases 4–6 with amplitude above 1 boost Midwest rain 2–3 weeks out.</p>
+      <p><strong>PDO</strong> — Positive PDO amplifies El Niño, strengthening the subtropical jet and Midwest moisture transport.</p>
+      <p><strong>AMO</strong> — Warm Atlantic increases evaporation and moisture feeding into continental storm systems.</p>
+      <p><strong>Gulf SST</strong> — Primary Midwest moisture source. Warmer Gulf = more water vapor on the low-level jet.</p>
+      <p><strong>Humidity</strong> — Above 75% RH means near-saturation. Small triggers can set off rain events.</p>
+      <p><strong>500mb Height</strong> — Low heights = upper trough = storms. High heights = ridge = dry and sunny.</p>
+    </div>
+  </div>
+</div>
+
 </div><!-- /container -->
 
 <script>
@@ -465,6 +560,8 @@ const MONTHLY  = __MONTHLY__;
 const DAILY    = __DAILY__;
 const PREDS    = __PREDS__;
 const KALSHI   = __KALSHI__;
+
+const INDICES  = __INDICES__;
 
 const MONTHS      = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const MONTHS_FULL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -597,12 +694,14 @@ function renderHistorical(){
       labels:Array.from({length:ddata.length},(_,i)=>i+1),
       datasets:[{
         data:ddata,
-        backgroundColor:ddata.map(v=>v>8?'#0284c7':v>4?'#38bdf8':'#bae6fd'),
+        backgroundColor:'#bae6fd',
+        hoverBackgroundColor:'#bae6fd',
         borderRadius:3,borderSkipped:false
       }]
     },
     options:{
       plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}mm avg`}}},
+      hover:{mode:null},
       scales:{
         y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#9ca3af',font:{family:'DM Mono',size:10}}},
         x:{grid:{display:false},ticks:{color:'#6b7280',font:{size:10}},title:{display:true,text:'Day of month',color:'#9ca3af'}}
@@ -798,6 +897,134 @@ function renderEdge(){
   });
 }
 
+function renderSignals(){
+  const grid    = document.getElementById('signalsGrid');
+  const summary = document.getElementById('signalSummary');
+  grid.innerHTML = '';
+
+  const sigEmoji = {wet:'🌧', dry:'☀️', neutral:'🌤', unknown:'❓'};
+  const sigLabel = {wet:'FAVORS RAIN', dry:'FAVORS DRY', neutral:'NEUTRAL', unknown:'NO DATA'};
+  const gaugeColor = {wet:'#0284c7', dry:'#b45309', neutral:'#9ca3af', unknown:'#d1d5db'};
+
+  // Ranges for gauge fill (normalized 0–100%)
+  const ranges = {
+    ao:        {min:-3,   max:3,    wet_dir:'negative'},
+    nao:       {min:-3,   max:3,    wet_dir:'negative'},
+    pdo:       {min:-3,   max:3,    wet_dir:'positive'},
+    amo:       {min:-0.4, max:0.4,  wet_dir:'positive'},
+    gulf_sst:  {min:22,   max:32,   wet_dir:'positive'},
+    tpw:       {min:20,   max:100,  wet_dir:'positive'},
+    z500:      {min:5300, max:5700, wet_dir:'negative'},
+    mjo:       {min:0,    max:3,    wet_dir:'positive'},
+  };
+
+  let wetCount=0, dryCount=0, neutralCount=0;
+
+  Object.entries(INDICES).forEach(([key, info]) => {
+    const sig = info.signal || 'unknown';
+    if(sig==='wet') wetCount++;
+    else if(sig==='dry') dryCount++;
+    else neutralCount++;
+
+    const v = info.value;
+    let valStr, gaugeW;
+    const r = ranges[key];
+
+    if(v===null||v===undefined){
+      valStr='no data'; gaugeW=0;
+    } else if(typeof v==='object'){
+      // MJO
+      valStr=`phase ${v.phase}`;
+      gaugeW = r ? Math.min(100, Math.max(0, ((v.amplitude - r.min)/(r.max - r.min))*100)) : 50;
+    } else if(typeof v==='number'){
+      const abs = Math.abs(v);
+      const decimals = abs > 100 ? 0 : abs > 10 ? 1 : 2;
+      const prefix = (key==='ao'||key==='nao'||key==='pdo'||key==='amo') && v>0 ? '+' : '';
+      valStr = `${prefix}${v.toFixed(decimals)}`;
+      gaugeW = r ? Math.min(100, Math.max(0, ((v - r.min)/(r.max - r.min))*100)) : 50;
+    } else {
+      valStr = String(v); gaugeW = 50;
+    }
+
+    grid.innerHTML += `
+      <div class="signal-card sig-${sig}">
+        <div class="sc-top">
+          <div class="sc-left">
+            <div class="sc-label">${key.toUpperCase().replace('_',' ')}</div>
+            <div class="sc-name">${info.label||key}</div>
+          </div>
+          <div class="sc-emoji">${sigEmoji[sig]||'❓'}</div>
+        </div>
+        <div class="sc-mid">
+          <span class="sc-value">${valStr}</span>
+          <span class="sc-unit">${typeof v==='object'?`· amp ${v.amplitude.toFixed(2)}`:(info.unit||'')}</span>
+        </div>
+        <div class="sc-date">as of ${info.date||'—'}</div>
+        <div class="sc-gauge">
+          <div class="sc-gauge-fill" style="width:${gaugeW}%;background:${gaugeColor[sig]||'#9ca3af'}"></div>
+        </div>
+        <div class="sc-bottom">
+          <span class="sc-badge sig-${sig}">${sigLabel[sig]||sig}</span>
+          <span class="sc-desc">${info.description||''}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  // Summary bar
+  const total = wetCount + dryCount + neutralCount || 1;
+  const wetPct  = Math.round(wetCount/total*100);
+  const dryPct  = Math.round(dryCount/total*100);
+  let overall, ovClass, ovColor;
+  if(wetCount > dryCount+1){overall='Atmospheric pattern favors rain';ovClass='ov-wet';ovColor='var(--sky)'}
+  else if(dryCount > wetCount+1){overall='Atmospheric pattern favors dry';ovClass='ov-dry';ovColor='var(--amber)'}
+  else{overall='Mixed signals — no strong bias';ovClass='ov-neutral';ovColor='var(--muted)'}
+
+  summary.innerHTML = `
+    <div class="ss-top">
+      <span class="ss-title">Current atmospheric state — Chicago</span>
+      <span class="ss-date">updated ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
+    </div>
+    <div class="ss-counts">
+      <div class="ss-item">
+        <div class="ss-dot" style="background:#0284c7"></div>
+        <div>
+          <div class="ss-count" style="color:#0284c7">${wetCount}</div>
+          <div class="ss-label">wet signals</div>
+        </div>
+      </div>
+      <div class="ss-item">
+        <div class="ss-dot" style="background:#9ca3af"></div>
+        <div>
+          <div class="ss-count" style="color:#9ca3af">${neutralCount}</div>
+          <div class="ss-label">neutral</div>
+        </div>
+      </div>
+      <div class="ss-item">
+        <div class="ss-dot" style="background:#b45309"></div>
+        <div>
+          <div class="ss-count" style="color:#b45309">${dryCount}</div>
+          <div class="ss-label">dry signals</div>
+        </div>
+      </div>
+    </div>
+    <div class="ss-bar-wrap">
+      <div class="ss-bar-track">
+        <div class="ss-bar-wet" style="width:${wetPct}%"></div>
+        <div class="ss-bar-dry" style="width:${dryPct}%"></div>
+      </div>
+      <div class="ss-bar-labels">
+        <span class="ss-bar-label" style="color:#0284c7">🌧 ${wetPct}% wet</span>
+        <span class="ss-bar-label" style="color:#b45309">${dryPct}% dry ☀️</span>
+      </div>
+    </div>
+    <div class="overall-verdict ${ovClass}">
+      <span class="ov-label">verdict</span>
+      <span class="ov-value" style="color:${ovColor}">${overall}</span>
+    </div>
+  `;
+}
+
 function showTab(name){
   document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
@@ -806,6 +1033,7 @@ function showTab(name){
   if(name==='historical') renderHistorical();
   if(name==='predictions') renderPredictions();
   if(name==='edge') renderEdge();
+  if(name==='signals') renderSignals();
 }
 
 showTab('historical');
@@ -817,7 +1045,8 @@ result = (HTML
     .replace('__MONTHLY__', monthly_js)
     .replace('__DAILY__',   daily_js)
     .replace('__PREDS__',   pred_js)
-    .replace('__KALSHI__',  kalshi_js))
+    .replace('__KALSHI__',  kalshi_js)
+    .replace('__INDICES__', indices_js))
 
 for fname in ['index.html', 'dashboard.html']:
     with open(fname, 'w') as fh:

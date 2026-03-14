@@ -1,0 +1,72 @@
+{
+  "ao": {
+    "value": -1.256,
+    "date": "2026-02",
+    "signal": "wet",
+    "label": "Arctic Oscillation",
+    "unit": "index",
+    "description": "Negative = polar vortex weakens, cold/stormy air invades Midwest",
+    "favorable_for_rain": "negative"
+  },
+  "nao": {
+    "value": 0.681,
+    "date": "2026-02",
+    "signal": "neutral",
+    "label": "North Atlantic Oscillation",
+    "unit": "index",
+    "description": "Negative NAO shifts storm track southward toward the US",
+    "favorable_for_rain": "negative"
+  },
+  "mjo": {
+    "value": null,
+    "signal": "unknown",
+    "label": "Madden-Julian Oscillation"
+  },
+  "pdo": {
+    "value": -1.01,
+    "date": "2026-02",
+    "signal": "dry",
+    "label": "Pacific Decadal Oscillation",
+    "unit": "index",
+    "description": "Positive PDO amplifies El Nino moisture patterns over North America",
+    "favorable_for_rain": "positive"
+  },
+  "amo": {
+    "value": 0.192,
+    "date": "2023-01",
+    "signal": "wet",
+    "label": "Atlantic Multidecadal Oscillation",
+    "unit": "\u00b0C anomaly",
+    "description": "Warm Atlantic SST increases moisture available for Midwest storms",
+    "favorable_for_rain": "positive"
+  },
+  "gulf_sst": {
+    "value": 24.6,
+    "date": "2026-03-13",
+    "signal": "dry",
+    "label": "Gulf of Mexico SST",
+    "unit": "\u00b0C",
+    "description": "Warmer Gulf increases moisture available for the low-level jet feeding Chicago",
+    "favorable_for_rain": "> 27.5\u00b0C",
+    "baseline": 27.0
+  },
+  "tpw": {
+    "value": 65.0,
+    "date": "2026-03-12",
+    "signal": "neutral",
+    "label": "Surface Relative Humidity",
+    "unit": "%",
+    "description": "High surface humidity means the atmosphere is close to saturation and rain-ready",
+    "favorable_for_rain": "> 75%"
+  },
+  "z500": {
+    "value": null,
+    "date": null,
+    "signal": "neutral",
+    "label": "500mb Geopotential Height",
+    "unit": "m",
+    "description": "Low 500mb heights = upper-level trough = storm-favorable pattern over Chicago",
+    "favorable_for_rain": "< 5440m",
+    "typical_range": "5400-5640m"
+  }
+}
