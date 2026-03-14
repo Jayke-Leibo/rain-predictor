@@ -18,9 +18,16 @@
     "favorable_for_rain": "negative"
   },
   "mjo": {
-    "value": null,
-    "signal": "unknown",
-    "label": "Madden-Julian Oscillation"
+    "value": {
+      "phase": 7,
+      "amplitude": 0.128
+    },
+    "date": "2024-02-24",
+    "signal": "neutral",
+    "label": "Madden-Julian Oscillation",
+    "unit": "phase + amplitude",
+    "description": "Phases 4-6 with amplitude >1 enhance Midwest precipitation 2-3 weeks out",
+    "favorable_for_rain": "phase 4-6, amplitude > 1"
   },
   "pdo": {
     "value": -1.01,
@@ -60,13 +67,13 @@
     "favorable_for_rain": "> 75%"
   },
   "z500": {
-    "value": null,
-    "date": null,
+    "value": 1020.7,
+    "date": "2026-03-12",
     "signal": "neutral",
-    "label": "500mb Geopotential Height",
-    "unit": "m",
-    "description": "Low 500mb heights = upper-level trough = storm-favorable pattern over Chicago",
-    "favorable_for_rain": "< 5440m",
-    "typical_range": "5400-5640m"
+    "label": "Mean Sea Level Pressure",
+    "unit": "hPa",
+    "description": "Low pressure = storm systems approaching. Below 1005hPa signals active weather over Chicago",
+    "favorable_for_rain": "< 1005 hPa",
+    "typical_range": "990-1030 hPa"
   }
 }
